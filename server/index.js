@@ -130,31 +130,43 @@ app.post('/api/playlist/create', async (req, res) => {
       return res.json({ id: playlistId, name: playlist.body.name, url: playlist.body.external_urls.spotify, tracksAdded: 0, tracksTotal: tracks.length });
     }
 
-    console.log('Adding', trackUris.length, 'tracks...');
+    console.log('Adding', trackUris.length, 'tracks using new endpoint...');
 
-    try {
-      const testApi = new SpotifyWebApi({
-        accessToken: token,
-        clientId: process.env.SPOTIFY_CLIENT_ID,
-        clientSecret: process.env.SPOTIFY_CLIENT_SECRET
-      });
-      const result = await testApi.addTracksToPlaylist(playlistId, trackUris);
-      console.log('SUCCESS! Snapshot:', result.body.snapshot_id);
-    } catch (addErr) {
-      console.error('Add failed with new API instance:', addErr.message);
-      try {
-        const result2 = await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
-        console.log('SUCCESS with original API! Snapshot:', result2.body.snapshot_id);
-      } catch (err2) {
-        console.error('Also failed:', err2.message);
+    let totalAdded = 0;
+    const chunkSize = 100;
+    for (let i = 0; i < trackUris.length; i += chunkSize) {
+      const chunk = trackUris.slice(i, i + chunkSize);
+      console.log(`Adding chunk ${Math.floor(i / chunkSize) + 1}: ${chunk.length} tracks`);
+
+      const response = await fetch(
+        `https://api.spotify.com/v1/playlists/${playlistId}/items`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uris: chunk }),
+        }
+      );
+
+      if (!response.ok) {
+        const errBody = await response.text();
+        throw new Error(`Spotify ${response.status}: ${errBody}`);
       }
+
+      const result = await response.json();
+      console.log(`Chunk OK. Snapshot:`, result.snapshot_id);
+      totalAdded += chunk.length;
     }
+
+    console.log('All tracks added:', totalAdded);
 
     res.json({
       id: playlistId,
       name: playlist.body.name,
       url: playlist.body.external_urls.spotify,
-      tracksAdded: trackUris.length,
+      tracksAdded: totalAdded,
       tracksTotal: tracks.length,
     });
   } catch (err) {
