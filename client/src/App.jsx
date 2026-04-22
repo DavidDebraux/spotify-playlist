@@ -75,20 +75,26 @@ function App() {
               />
             </div>
             <UploadZone onTracksParsed={setTracks} />
-            {tracks.length > 0 && playlistName && (
-              <button
-                className="spotify-btn create-btn"
-                onClick={createPlaylist}
-                disabled={creating}
-              >
-                {creating ? 'Creating...' : 'Create Playlist'}
-              </button>
+            {tracks.length > 0 && (
+              <div className="create-actions">
+                <button
+                  className="spotify-btn create-btn"
+                  onClick={createPlaylist}
+                  disabled={creating || !playlistName}
+                >
+                  {creating ? 'Creating...' : 'Create Playlist'}
+                </button>
+                {!playlistName && <span className="hint">Enter a playlist name first</span>}
+              </div>
             )}
             {result && (
               <div className={result.error ? 'result-error' : 'result-success'}>
-                {result.error ? result.error : `Playlist "${result.name}" created! ${result.tracksAdded}/${result.tracksTotal} tracks added.`}
+                {result.error ? `Error: ${result.error}` : `Playlist created!`}
+                {result.tracksAdded !== undefined && (
+                  <p>{result.tracksAdded}/{result.tracksTotal} tracks added</p>
+                )}
                 {result.url && (
-                  <a href={result.url} target="_blank" rel="noopener noreferrer">Open in Spotify</a>
+                  <a href={result.url} target="_blank" rel="noopener noreferrer" className="spotify-link">Open in Spotify</a>
                 )}
               </div>
             )}

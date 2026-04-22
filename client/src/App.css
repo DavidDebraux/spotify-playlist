@@ -133,3 +133,14 @@ main {
   outline: none;
   border-color: #1DB954;
 }
+
+.create-actions {
+  margin-top: 20px;
+}
+
+.create-actions .hint {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+}

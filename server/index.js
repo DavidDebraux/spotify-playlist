@@ -22,7 +22,10 @@ const scopes = [
   'playlist-modify-public',
   'playlist-modify-private',
   'playlist-read-private',
+  'playlist-read-collaborative',
   'user-read-email',
+  'user-library-modify',
+  'user-follow-modify',
 ];
 
 app.get('/api/auth/login', (req, res) => {
@@ -86,31 +89,65 @@ app.post('/api/playlist/create', async (req, res) => {
   if (!token || !name || !tracks?.length) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
+  console.log('Creating playlist:', name, 'with', tracks.length, 'tracks');
   spotifyApi.setAccessToken(token);
+
   try {
     const user = await spotifyApi.getMe();
-    const playlist = await spotifyApi.createPlaylist(user.body.id, {
+    const userId = user.body.id;
+    console.log('User ID:', userId);
+    console.log('User email:', user.body.email);
+    console.log('Product:', user.body.product);
+
+    const playlist = await spotifyApi.createPlaylist(userId, {
       name,
       description: 'Created with Spotify Playlist tool',
-      public: false,
+      public: true,
     });
     const playlistId = playlist.body.id;
+    console.log('Playlist ID:', playlistId);
+    console.log('Playlist public:', playlist.body.public);
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const trackUris = [];
     for (const track of tracks) {
       const query = `${track.title} ${track.artist}`.trim();
       try {
         const search = await spotifyApi.searchTracks(query, { limit: 1 });
-        if (search.body.tracks.items.length > 0) {
+        if (search.body.tracks?.items?.length > 0) {
           trackUris.push(search.body.tracks.items[0].uri);
+          console.log(`Found: ${search.body.tracks.items[0].name} -> ${search.body.tracks.items[0].uri}`);
+        } else {
+          console.log(`Not found: ${query}`);
         }
       } catch (err) {
-        console.error(`Search error for "${query}":`, err.message);
+        console.error('Search error:', err.message);
       }
     }
 
-    if (trackUris.length > 0) {
-      await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
+    if (trackUris.length === 0) {
+      return res.json({ id: playlistId, name: playlist.body.name, url: playlist.body.external_urls.spotify, tracksAdded: 0, tracksTotal: tracks.length });
+    }
+
+    console.log('Adding', trackUris.length, 'tracks...');
+
+    try {
+      const testApi = new SpotifyWebApi({
+        accessToken: token,
+        clientId: process.env.SPOTIFY_CLIENT_ID,
+        clientSecret: process.env.SPOTIFY_CLIENT_SECRET
+      });
+      const result = await testApi.addTracksToPlaylist(playlistId, trackUris);
+      console.log('SUCCESS! Snapshot:', result.body.snapshot_id);
+    } catch (addErr) {
+      console.error('Add failed with new API instance:', addErr.message);
+      try {
+        const result2 = await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
+        console.log('SUCCESS with original API! Snapshot:', result2.body.snapshot_id);
+      } catch (err2) {
+        console.error('Also failed:', err2.message);
+      }
     }
 
     res.json({
@@ -121,6 +158,7 @@ app.post('/api/playlist/create', async (req, res) => {
       tracksTotal: tracks.length,
     });
   } catch (err) {
+    console.error('Error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
