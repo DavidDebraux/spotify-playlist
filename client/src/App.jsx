@@ -1,9 +1,39 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from './context/AuthContext.jsx'
+import { UploadZone } from './components/UploadZone.jsx'
 import './App.css'
 
 function App() {
   const { isAuthenticated, user, loading, login, logout, handleCallback } = useAuth()
+  const [tracks, setTracks] = useState([])
+  const [playlistName, setPlaylistName] = useState('')
+  const [creating, setCreating] = useState(false)
+  const [result, setResult] = useState(null)
+
+  const createPlaylist = async () => {
+    const token = localStorage.getItem('spotify_token')
+    if (!token || !tracks.length || !playlistName) return
+
+    setCreating(true)
+    setResult(null)
+
+    try {
+      const res = await fetch('/api/playlist/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: playlistName, tracks }),
+      })
+      const data = await res.json()
+      setResult(data)
+    } catch (err) {
+      setResult({ error: err.message })
+    } finally {
+      setCreating(false)
+    }
+  }
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -32,7 +62,37 @@ function App() {
           </div>
         </header>
         <main>
-          <p>Welcome, {user.display_name}!</p>
+          <div className="create-section">
+            <h2>Create a new playlist</h2>
+            <p>Upload a file with your favorite songs</p>
+            <div className="playlist-name-input">
+              <label>Playlist name:</label>
+              <input
+                type="text"
+                value={playlistName}
+                onChange={(e) => setPlaylistName(e.target.value)}
+                placeholder="My Playlist"
+              />
+            </div>
+            <UploadZone onTracksParsed={setTracks} />
+            {tracks.length > 0 && playlistName && (
+              <button
+                className="spotify-btn create-btn"
+                onClick={createPlaylist}
+                disabled={creating}
+              >
+                {creating ? 'Creating...' : 'Create Playlist'}
+              </button>
+            )}
+            {result && (
+              <div className={result.error ? 'result-error' : 'result-success'}>
+                {result.error ? result.error : `Playlist "${result.name}" created! ${result.tracksAdded}/${result.tracksTotal} tracks added.`}
+                {result.url && (
+                  <a href={result.url} target="_blank" rel="noopener noreferrer">Open in Spotify</a>
+                )}
+              </div>
+            )}
+          </div>
         </main>
       </div>
     )

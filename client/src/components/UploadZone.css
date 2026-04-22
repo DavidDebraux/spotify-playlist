@@ -1,0 +1,80 @@
+.upload-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.upload-zone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fafafa;
+}
+
+.upload-zone:hover {
+  border-color: #1DB954;
+  background: #f0fdf4;
+}
+
+.upload-zone.dragging {
+  border-color: #1DB954;
+  background: #dcfce7;
+}
+
+.upload-zone.loading {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin: 0 0 16px;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
+}
+
+.upload-error {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.tracks-preview {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+}
+
+.tracks-preview h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #166534;
+}
+
+.tracks-preview ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.tracks-preview li {
+  margin: 4px 0;
+}
+
+.tracks-preview .more {
+  color: #666;
+  font-style: italic;
+}

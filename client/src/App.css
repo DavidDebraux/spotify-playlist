@@ -85,3 +85,51 @@ main {
   height: 36px;
   border-radius: 50%;
 }
+
+.create-section {
+  text-align: center;
+  padding: 40px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  max-width: 500px;
+}
+
+.create-section h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.create-section p {
+  margin: 0 0 24px;
+  color: #666;
+}
+
+.create-btn {
+  margin-top: 20px;
+}
+
+.playlist-name-input {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.playlist-name-input label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.playlist-name-input input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.playlist-name-input input:focus {
+  outline: none;
+  border-color: #1DB954;
+}

@@ -2,7 +2,7 @@
 
 ## Groupe 1: UI Upload
 - [ ] 1.1 Créer zone drag&drop sur page principale
-- [ ] 1.2 Afficher message d'nstruction
+- [ ] 1.2 Afficher message d'instruction
 - [ ] 1.3 Support click pour sélection fichier
 - [ ] 1.4 Feedback visuel (hover, drop)
 
@@ -18,7 +18,7 @@
 - [ ] 3.3 Ignorer lignes vides
 - [ ] 3.4 Normaliser les données
 
-##Groupe 4: Validation
+## Groupe 4: Validation
 - [ ] 4.1 Vérifier que les colonnes existent
 - [ ] 4.2 Afficher erreurs si fichier invalide
 - [ ] 4.3 Afficher Aperçu des tracks trouvés
