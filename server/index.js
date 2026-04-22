@@ -51,8 +51,9 @@ app.get('/callback', async (req, res) => {
         </body>
       </html>
     `);
-  } catch (err) {
-    res.send(`<html><body><script>window.opener.postMessage({ type: 'auth_error', error: '${err.message}' }, '*'); window.close();</script></body></html>`);
+} catch (err) {
+    console.error('Catch error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -80,6 +81,63 @@ app.get('/api/auth/me', async (req, res) => {
     res.json(data.body);
   } catch (err) {
     res.status(401).json({ error: err.message });
+  }
+});
+
+app.post('/api/playlist/add-tracks', async (req, res) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  const { playlistId, tracks } = req.body;
+
+  if (!token || !playlistId || !tracks?.length) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  console.log('Adding', tracks.length, 'tracks to playlist', playlistId);
+
+  try {
+    const trackUris = [];
+    for (const track of tracks) {
+      const query = `${track.title} ${track.artist}`.trim();
+      const searchRes = await fetch(
+        `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const searchData = await searchRes.json();
+      if (searchData.tracks?.items?.length > 0) {
+        trackUris.push(searchData.tracks.items[0].uri);
+        console.log(`Found: ${searchData.tracks.items[0].name}`);
+      }
+    }
+
+    if (trackUris.length === 0) {
+      return res.json({ tracksAdded: 0, tracksTotal: tracks.length });
+    }
+
+    let totalAdded = 0;
+    const chunkSize = 100;
+    for (let i = 0; i < trackUris.length; i += chunkSize) {
+      const chunk = trackUris.slice(i, i + chunkSize);
+      const response = await fetch(
+        `https://api.spotify.com/v1/playlists/${playlistId}/items`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uris: chunk }),
+        }
+      );
+      if (!response.ok) throw new Error(`Spotify ${response.status}`);
+      const result = await response.json();
+      console.log(`Chunk OK:`, result.snapshot_id);
+      totalAdded += chunk.length;
+    }
+
+    res.json({ tracksAdded: totalAdded, tracksTotal: tracks.length });
+  } catch (err) {
+    console.error('Add tracks error:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -171,6 +229,55 @@ app.post('/api/playlist/create', async (req, res) => {
     });
   } catch (err) {
     console.error('Error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/playlists', async (req, res) => {
+  console.log('Headers:', req.headers);
+  const authHeader = req.headers.authorization;
+  console.log('Authorization header:', authHeader);
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  console.log('Token after replace:', token ? token.substring(0, 20) + '...' : 'null');
+  if (!token) {
+    return res.status(401).json({ error: 'No token', received: authHeader });
+  }
+
+  try {
+    const response = await fetch(
+      'https://api.spotify.com/v1/me/playlists?limit=50',
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    console.log('Response status:', response.status);
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error('Spotify error:', response.status, errText);
+      return res.status(500).json({ error: `Spotify error: ${errText}` });
+    }
+
+const data = await response.json();
+    console.log('Playlists found:', data.items?.length || 0);
+
+    const meRes = await fetch('https://api.spotify.com/v1/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const meData = await meRes.json();
+    const myId = meData.id;
+    console.log('My ID:', myId);
+
+    const playlists = data.items
+      .filter(p => p !== null && p.owner?.id === myId)
+      .map(p => ({
+        id: p.id,
+        name: p.name,
+        image: p.images?.[0]?.url,
+        public: p.public,
+      }));
+    res.json(playlists);
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });

@@ -9,6 +9,68 @@ function App() {
   const [playlistName, setPlaylistName] = useState('')
   const [creating, setCreating] = useState(false)
   const [result, setResult] = useState(null)
+  const [mode, setMode] = useState('new')
+  const [playlists, setPlaylists] = useState([])
+  const [selectedPlaylist, setSelectedPlaylist] = useState('')
+  const [loadingPlaylists, setLoadingPlaylists] = useState(false)
+
+  const fetchPlaylists = async () => {
+    const token = localStorage.getItem('spotify_token')
+    console.log('Fetching playlists, token exists:', !!token)
+    if (!token || loadingPlaylists) return
+
+    setLoadingPlaylists(true)
+    try {
+      const res = await fetch('http://localhost:8888/api/playlists', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      console.log('Response:', res.status)
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Failed to fetch playlists')
+      }
+      const data = await res.json()
+      console.log('Got playlists:', data.length)
+      setPlaylists(data || [])
+    } catch (err) {
+      console.error('Fetch playlists error:', err.message)
+    } finally {
+      setLoadingPlaylists(false)
+    }
+  }
+
+  useEffect(() => {
+    console.log('Mode changed to:', mode, 'isAuthenticated:', isAuthenticated, 'playlists:', playlists.length)
+    if (isAuthenticated && mode === 'existing' && playlists.length === 0) {
+      console.log('Calling fetchPlaylists')
+      fetchPlaylists()
+    }
+  }, [isAuthenticated, mode])
+
+  const addToExisting = async () => {
+    const token = localStorage.getItem('spotify_token')
+    if (!token || !tracks.length || !selectedPlaylist) return
+
+    setCreating(true)
+    setResult(null)
+
+    try {
+      const res = await fetch('http://localhost:8888/api/playlist/add-tracks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ playlistId: selectedPlaylist, tracks }),
+      })
+      const data = await res.json()
+      setResult(data)
+    } catch (err) {
+      setResult({ error: err.message })
+    } finally {
+      setCreating(false)
+    }
+  }
 
   const createPlaylist = async () => {
     const token = localStorage.getItem('spotify_token')
@@ -18,7 +80,7 @@ function App() {
     setResult(null)
 
     try {
-      const res = await fetch('/api/playlist/create', {
+      const res = await fetch('http://localhost:8888/api/playlist/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,33 +125,69 @@ function App() {
         </header>
         <main>
           <div className="create-section">
-            <h2>Create a new playlist</h2>
-            <p>Upload a file with your favorite songs</p>
-            <div className="playlist-name-input">
-              <label>Playlist name:</label>
-              <input
-                type="text"
-                value={playlistName}
-                onChange={(e) => setPlaylistName(e.target.value)}
-                placeholder="My Playlist"
-              />
+            <div className="mode-switch">
+              <button className={mode === 'new' ? 'active' : ''} onClick={() => setMode('new')}>New Playlist</button>
+              <button className={mode === 'existing' ? 'active' : ''} onClick={() => setMode('existing')}>
+                {loadingPlaylists ? 'Loading...' : 'Existing Playlist'}
+              </button>
             </div>
+            {loadingPlaylists && <p className="loading-text">Loading playlists...</p>}
+
+            {mode === 'new' ? (
+              <>
+                <h2>Create a new playlist</h2>
+                <p>Upload a file with your favorite songs</p>
+                <div className="playlist-name-input">
+                  <label>Playlist name:</label>
+                  <input
+                    type="text"
+                    value={playlistName}
+                    onChange={(e) => setPlaylistName(e.target.value)}
+                    placeholder="My Playlist"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <h2>Add to existing playlist</h2>
+                <p>Select a playlist to add your tracks to</p>
+                <div className="playlist-name-input">
+                  <label>Select playlist:</label>
+                  <select value={selectedPlaylist} onChange={(e) => setSelectedPlaylist(e.target.value)}>
+                    <option value="">Choose a playlist...</option>
+                    {playlists.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </>
+            )}
+
             <UploadZone onTracksParsed={setTracks} />
-            {tracks.length > 0 && (
-              <div className="create-actions">
+            <div className="create-actions">
+              {mode === 'new' ? (
                 <button
                   className="spotify-btn create-btn"
                   onClick={createPlaylist}
-                  disabled={creating || !playlistName}
+                  disabled={creating || !playlistName || tracks.length === 0}
                 >
                   {creating ? 'Creating...' : 'Create Playlist'}
                 </button>
-                {!playlistName && <span className="hint">Enter a playlist name first</span>}
-              </div>
-            )}
+              ) : (
+                <button
+                  className="spotify-btn create-btn"
+                  onClick={addToExisting}
+                  disabled={creating || !selectedPlaylist || tracks.length === 0}
+                >
+                  {creating ? 'Adding...' : 'Add Tracks'}
+                </button>
+              )}
+              {mode === 'new' && !playlistName && tracks.length > 0 && <span className="hint">Enter a playlist name</span>}
+              {mode === 'existing' && !selectedPlaylist && tracks.length > 0 && <span className="hint">Select a playlist</span>}
+            </div>
             {result && (
               <div className={result.error ? 'result-error' : 'result-success'}>
-                {result.error ? `Error: ${result.error}` : `Playlist created!`}
+                {result.error ? `Error: ${result.error}` : mode === 'new' ? 'Playlist created!' : 'Tracks added!'}
                 {result.tracksAdded !== undefined && (
                   <p>{result.tracksAdded}/{result.tracksTotal} tracks added</p>
                 )}
