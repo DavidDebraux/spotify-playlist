@@ -6,7 +6,11 @@ import './App.css'
 function App() {
   const { isAuthenticated, user, loading, login, logout, handleCallback } = useAuth()
   const [tracks, setTracks] = useState([])
-  console.log('App tracks state:', tracks)
+
+  const handleTracksParsed = (parsedTracks) => {
+    setTracks(parsedTracks)
+    setResult(null)
+  }
   const [playlistName, setPlaylistName] = useState('')
   const [creating, setCreating] = useState(false)
   const [result, setResult] = useState(null)
@@ -134,43 +138,48 @@ function App() {
             </div>
             {loadingPlaylists && <p className="loading-text">Loading playlists...</p>}
 
-            {mode === 'new' ? (
-              <>
-                <h2>Create a new playlist</h2>
-                <p>Upload a file with your favorite songs</p>
-                <div className="playlist-name-input">
-                  <label>Playlist name:</label>
-                  <input
-                    type="text"
-                    value={playlistName}
-                    onChange={(e) => setPlaylistName(e.target.value)}
-                    placeholder="My Playlist"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <h2>Add to existing playlist</h2>
-                <p>Select a playlist to add your tracks to</p>
-                <div className="playlist-name-input">
-                  <label>Select playlist:</label>
-                  <select value={selectedPlaylist} onChange={(e) => setSelectedPlaylist(e.target.value)}>
-                    <option value="">Choose a playlist...</option>
-                    {playlists.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </>
-            )}
+            <div className="playlist-info">
+              {mode === 'new' ? (
+                <>
+                  <h2>Create a new playlist</h2>
+                  <p>Upload a file with your favorite songs</p>
+                  <div className="playlist-name-input">
+                    <label>Playlist name:</label>
+                    <input
+                      type="text"
+                      value={playlistName}
+                      onChange={(e) => setPlaylistName(e.target.value)}
+                      placeholder="My Playlist"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2>Add to existing playlist</h2>
+                  <p>Select a playlist to add your tracks to</p>
+                  <div className="playlist-name-input">
+                    <label>Select playlist:</label>
+                    <select value={selectedPlaylist} onChange={(e) => setSelectedPlaylist(e.target.value)}>
+                      <option value="">Choose a playlist...</option>
+                      {playlists.map(p => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
+            </div>
 
-            <UploadZone onTracksParsed={setTracks} />
+            <div className="upload-info">
+              <UploadZone onTracksParsed={handleTracksParsed} />
+            </div>
+
             <div className="create-actions">
               {mode === 'new' ? (
                 <button
                   className="spotify-btn create-btn"
                   onClick={createPlaylist}
-                  disabled={creating || !playlistName || tracks.length === 0}
+                  disabled={creating || !playlistName || tracks.length === 0 || result?.tracksAdded !== undefined}
                 >
                   {creating ? 'Creating...' : 'Create Playlist'}
                 </button>
@@ -178,7 +187,7 @@ function App() {
                 <button
                   className="spotify-btn create-btn"
                   onClick={addToExisting}
-                  disabled={creating || !selectedPlaylist || tracks.length === 0}
+                  disabled={creating || !selectedPlaylist || tracks.length === 0 || result?.tracksAdded !== undefined}
                 >
                   {creating ? 'Adding...' : 'Add Tracks'}
                 </button>

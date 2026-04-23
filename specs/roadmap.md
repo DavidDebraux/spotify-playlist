@@ -31,5 +31,5 @@
 
 ## Phase 6: Améliorations
 - [ ] Gestion des erreurs (track non trouvé)
-- [ ] UI/UX polish
+- [x] UI/UX responsive (2 colonnes sur desktop)
 - [ ] Tests
