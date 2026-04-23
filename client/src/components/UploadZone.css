@@ -20,6 +20,13 @@
   transition: all 0.2s;
 }
 
+@media (min-width: 600px) {
+  .mode-switch button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
 .mode-switch button:hover {
   border-color: #1DB954;
 }
@@ -82,12 +89,14 @@
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   border-radius: 6px;
+  text-align: left;
 }
 
 .tracks-preview h3 {
   margin: 0 0 12px;
   font-size: 16px;
   color: #166534;
+  text-align: center;
 }
 
 .tracks-preview ul {

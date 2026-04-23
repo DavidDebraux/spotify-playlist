@@ -64,6 +64,13 @@ main {
   cursor: not-allowed;
 }
 
+@media (min-width: 600px) {
+  .spotify-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
 .logout-btn {
   background: transparent;
   color: #666;
@@ -96,6 +103,7 @@ main {
   border: 1px solid #eee;
   border-radius: 8px;
   max-width: 500px;
+  width: 100%;
 }
 
 .create-section h2 {
@@ -106,38 +114,6 @@ main {
 .create-section p {
   margin: 0 0 24px;
   color: #666;
-}
-
-@media (min-width: 900px) {
-  .create-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    max-width: 1000px;
-    text-align: left;
-  }
-
-  .create-section > * {
-    min-width: 0;
-  }
-
-  .create-section .mode-switch {
-    grid-column: 1 / 3;
-  }
-
-  .create-section .playlist-info {
-    grid-column: 1 / 2;
-  }
-
-  .create-section .upload-info {
-    grid-column: 2 / 3;
-    grid-row: 2 / 4;
-  }
-
-  .create-section .create-actions {
-    grid-column: 1 / 2;
-    align-self: start;
-  }
 }
 
 .create-btn {
@@ -173,6 +149,13 @@ main {
   border-radius: 6px;
 }
 
+@media (min-width: 600px) {
+  .mode-switch button {
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
 .mode-switch button.active {
   background: #1DB954;
   color: white;
@@ -204,6 +187,14 @@ main {
   border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
+}
+
+@media (min-width: 600px) {
+  .playlist-name-input input,
+  .playlist-name-input select {
+    padding: 10px;
+    font-size: 14px;
+  }
 }
 
 .playlist-name-input input:focus {
