@@ -214,12 +214,9 @@ function App() {
 
   return (
     <div className="app">
-      <header>
-        <h1>Spotify Playlist</h1>
-      </header>
       <main>
         <div className="login-card">
-          <h2>Create playlists from Excel</h2>
+          <h2>Create playlists</h2>
           <p>Upload a file with your favorite songs and create a new playlist automatically.</p>
           <button onClick={login} className="spotify-btn">
             Connect to Spotify
