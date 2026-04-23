@@ -122,7 +122,6 @@ function App() {
         <header>
           <h1>Spotify Playlist</h1>
           <div className="user-info">
-            <span className="user-name">{user.display_name}</span>
             {user.images?.[0] && (
               <img src={user.images[0].url} alt="" className="avatar" />
             )}
@@ -213,51 +212,12 @@ function App() {
     )
   }
 
-return (
+  return (
     <div className="app">
       <main>
         <div className="login-card">
-          <div className="login-hero">
-            <svg viewBox="0 0 140 120" className="login-icon">
-              <defs>
-                <linearGradient id="caseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#3a3a3a"/>
-                  <stop offset="100%" stopColor="#222"/>
-                </linearGradient>
-                <linearGradient id="vinylGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#1a1a1a"/>
-                  <stop offset="100%" stopColor="#0a0a0a"/>
-                </linearGradient>
-              </defs>
-              
-              <rect x="10" y="10" width="120" height="90" rx="6" fill="url(#caseGrad)" stroke="#1DB954" strokeWidth="1.5"/>
-              
-              <circle cx="55" cy="52" r="30" fill="url(#vinylGrad)" stroke="#333" strokeWidth="1">
-                <animateTransform attributeName="transform" type="rotate" from="0 55 52" to="360 55 52" dur="2s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="55" cy="52" r="26" fill="transparent" stroke="#1DB954" strokeWidth="0.5" opacity="0.5">
-                <animateTransform attributeName="transform" type="rotate" from="0 55 52" to="360 55 52" dur="2s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="55" cy="52" r="20" fill="transparent" stroke="#1DB954" strokeWidth="0.5" strokeDasharray="20 5">
-                <animateTransform attributeName="transform" type="rotate" from="0 55 52" to="360 55 52" dur="2s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="55" cy="52" r="11" fill="#1DB954" opacity="0.15"/>
-              <circle cx="55" cy="52" r="4" fill="#1DB954"/>
-              
-              <rect x="30" y="35" width="6" height="35" rx="3" fill="#1DB954" transform="rotate(-25 33 35)"/>
-              <circle cx="33" cy="32" r="5" fill="#444" stroke="#1DB954" strokeWidth="1.5"/>
-              
-              <rect x="95" y="40" width="25" height="18" rx="3" fill="#222" stroke="#1DB954" strokeWidth="1.5"/>
-              <rect x="98" y="43" width="19" height="12" rx="2" fill="#1DB954">
-                <animate attributeName="opacity" values="1;0.7;1" dur="1s" repeatCount="indefinite"/>
-              </rect>
-              <rect x="100" y="45" width="4" height="8" rx="1" fill="#222" opacity="0.5"/>
-              <rect x="106" y="45" width="4" height="8" rx="1" fill="#222" opacity="0.5"/>
-              <rect x="112" y="45" width="2" height="8" rx="1" fill="#222" opacity="0.3"/>
-            </svg>
-          </div>
-          <h2>Spotify Playlist</h2>
-          <p>Create playlists from Excel, CSV or Image</p>
+          <h2>Create playlists</h2>
+          <p>Upload a file with your favorite songs and create a new playlist automatically.</p>
           <button onClick={login} className="spotify-btn">
             Connect to Spotify
           </button>
