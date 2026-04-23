@@ -6,6 +6,7 @@ import './App.css'
 function App() {
   const { isAuthenticated, user, loading, login, logout, handleCallback } = useAuth()
   const [tracks, setTracks] = useState([])
+  console.log('App tracks state:', tracks)
   const [playlistName, setPlaylistName] = useState('')
   const [creating, setCreating] = useState(false)
   const [result, setResult] = useState(null)

@@ -7,23 +7,29 @@
 - [x] Gestion du token d'accès
 
 ## Phase 2: Upload & Parsing (Priorité haute)
-- [ ] Zone drag&drop pour upload
-- [ ] Support format .xlsx et .csv
-- [ ] Parser les colonnes titre/artiste
-- [ ] Validation des données
+- [x] Zone drag&drop pour upload
+- [x] Support format .xlsx et .csv
+- [x] Parser les colonnes titre/artiste
+- [x] Validation des données
 
-## Phase 3: Création Playlist (Priorité haute)
-- [ ] Créer playlist via API Spotify
-- [ ] Rechercher tracks (search endpoint)
-- [ ] Ajouter tracks à la playlist
-- [ ] Feedback utilisateur (succès/erreurs)
+## Phase 3: Upload Image/OCR (Priorité haute)
+- [x] Zone upload image (photo playlist écrite/imprimée)
+- [x] Intégration Tesseract.js pour OCR
+- [x] Parser le texte extrait vers titre/artiste
+- [ ] Validation et correction manuelle
 
-## Phase 4: Liste Existantes (Priorité moyenne)
-- [ ] Récupérer playlists de l'utilisateur
-- [ ] Interface de sélection
-- [ ] Ajout à playlist existante
+## Phase 4: Création Playlist (Priorité haute)
+- [x] Créer playlist via API Spotify
+- [x] Rechercher tracks (search endpoint)
+- [x] Ajouter tracks à la playlist
+- [x] Feedback utilisateur (succès/erreurs)
 
-## Phase 5: Améliorations
+## Phase 5: Liste Existantes (Priorité moyenne)
+- [x] Récupérer playlists de l'utilisateur
+- [x] Interface de sélection
+- [x] Ajout à playlist existante
+
+## Phase 6: Améliorations
 - [ ] Gestion des erreurs (track non trouvé)
 - [ ] UI/UX polish
 - [ ] Tests
