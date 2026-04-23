@@ -2,6 +2,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
 header {
@@ -9,13 +11,17 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 10;
 }
 
 header h1 {
   margin: 0;
-  font-size: 24px;
-  color: #191812;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1DB954;
 }
 
 main {
@@ -23,47 +29,96 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+main::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(29, 185, 84, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(30, 215, 96, 0.08) 0%, transparent 40%);
+  animation: bgPulse 20s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes bgPulse {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-5%, -5%) rotate(5deg); }
 }
 
 .login-card {
   text-align: center;
-  padding: 40px;
-  border: 1px solid #eee;
-  border-radius: 8px;
+  padding: 48px 40px;
   max-width: 400px;
   width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.login-hero {
+  margin-bottom: 24px;
+}
+
+.login-icon {
+  width: 140px;
+  height: 120px;
+  filter: drop-shadow(0 4px 12px rgba(29, 185, 84, 0.4));
 }
 
 .login-card h2 {
-  margin: 0 0 16px;
-  font-size: 24px;
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1DB954;
+  text-shadow: 0 0 30px rgba(29, 185, 84, 0.5);
 }
 
 .login-card p {
-  margin: 0 0 24px;
-  color: #666;
+  margin: 0 0 32px;
+  color: #b3b3b3;
+  font-size: 15px;
 }
 
 .spotify-btn {
-  background: #1DB954;
-  color: white;
+  background: linear-gradient(90deg, #1DB954 0%, #1ed760 100%);
+  color: #000;
   border: none;
-  padding: 14px 24px;
+  padding: 14px 32px;
   font-size: 16px;
-  font-weight: 600;
-  border-radius: 30px;
+  font-weight: 700;
+  border-radius: 500px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  width: 100%;
+  max-width: 280px;
 }
 
 .spotify-btn:hover {
-  background: #1ed760;
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.4);
 }
 
 .spotify-btn:disabled {
-  background: #a0a0a0;
+  background: #535353;
+  color: #a7a7a7;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 @media (min-width: 600px) {
@@ -74,17 +129,19 @@ main {
 }
 
 .logout-btn {
-  background: transparent;
-  color: #666;
-  border: 1px solid #ccc;
+  background: rgba(255, 255, 255, 0.1);
+  color: #b3b3b3;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 8px 16px;
   font-size: 14px;
   border-radius: 20px;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .logout-btn:hover {
-  background: #f5f5f5;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 .user-info {
@@ -93,29 +150,39 @@ main {
   gap: 12px;
 }
 
+.user-name {
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+}
+
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
 }
 
 .create-section {
   text-align: center;
   padding: 30px;
-  border: 1px solid #eee;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   max-width: 500px;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .create-section h2 {
   margin: 0 0 8px;
   font-size: 24px;
+  color: #fff;
 }
 
 .create-section p {
   margin: 0 0 24px;
-  color: #666;
+  color: #b3b3b3;
 }
 
 .create-btn {
