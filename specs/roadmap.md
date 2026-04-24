@@ -32,4 +32,5 @@
 ## Phase 6: Améliorations
 - [ ] Gestion des erreurs (track non trouvé)
 - [x] UI/UX responsive (2 colonnes sur desktop)
+- [ ] Refresh CSS et apparence générale
 - [ ] Tests

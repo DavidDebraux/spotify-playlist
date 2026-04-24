@@ -125,6 +125,7 @@ function App() {
             {user.images?.[0] && (
               <img src={user.images[0].url} alt="" className="avatar" />
             )}
+            <span className="user-name">{user.display_name}</span>
             <button onClick={logout} className="logout-btn">Logout</button>
           </div>
         </header>
@@ -215,9 +216,21 @@ function App() {
   return (
     <div className="app">
       <main>
-        <div className="login-card">
-          <h2>Create playlists</h2>
-          <p>Upload a file with your favorite songs and create a new playlist automatically.</p>
+<div className="login-card">
+          <div className="login-logo spinning">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="35" fill="#111" stroke="#1DB954" stroke-width="2"/>
+              <circle cx="40" cy="40" r="28" fill="none" stroke="#222" stroke-width="1" stroke-dasharray="3 2"/>
+              <circle cx="40" cy="40" r="24" fill="none" stroke="#222" stroke-width="0.5" stroke-dasharray="2 2"/>
+              <circle cx="40" cy="40" r="20" fill="none" stroke="#222" stroke-width="0.5" stroke-dasharray="2 2"/>
+              <circle cx="40" cy="40" r="16" fill="none" stroke="#222" stroke-width="0.5" stroke-dasharray="1 2"/>
+              <circle cx="40" cy="40" r="12" fill="none" stroke="#222" stroke-width="0.5" stroke-dasharray="1 2"/>
+              <circle cx="40" cy="40" r="8" fill="#1DB954"/>
+              <circle cx="40" cy="40" r="2" fill="#111"/>
+            </svg>
+          </div>
+          <h2>Spotify Playlist</h2>
+          <p>Create playlists from Excel, CSV or Image</p>
           <button onClick={login} className="spotify-btn">
             Connect to Spotify
           </button>

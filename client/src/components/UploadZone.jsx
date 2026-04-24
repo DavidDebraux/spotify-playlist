@@ -184,15 +184,12 @@ export function UploadZone({ onTracksParsed }) {
         <div className="tracks-preview">
           <h3>{tracks.length} pistes trouvées</h3>
           <ul>
-            {tracks.slice(0, 5).map((track, i) => (
+            {tracks.map((track, i) => (
               <li key={i}>
                 <strong>{track.title}</strong>
                 {track.artist && <span> - {track.artist}</span>}
               </li>
             ))}
-            {tracks.length > 5 && (
-              <li className="more">...et {tracks.length - 5} autres</li>
-            )}
           </ul>
         </div>
       )}
