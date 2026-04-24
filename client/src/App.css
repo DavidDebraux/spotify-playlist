@@ -74,6 +74,36 @@ main::before {
   margin-bottom: 20px;
 }
 
+.login-logo {
+  margin-bottom: 24px;
+}
+
+.login-logo img,
+.login-logo svg {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 8px 24px rgba(29, 185, 84, 0.5));
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.login-logo img {
+  border-radius: 50%;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.login-logo.spinning svg {
+  animation: spin 3s linear infinite;
+}
+
 .login-icon {
   width: 140px;
   height: 100px;
