@@ -17,6 +17,7 @@
 ## Data Processing
 - SheetJS (xlsx) pour parsing Excel/CSV
 - CSV parser (papaparse)
+- **OCR**: Tesseract.js pour extraction de pistes depuis images
 
 ## Architecture
 ```
